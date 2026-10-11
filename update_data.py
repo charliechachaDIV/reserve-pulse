@@ -11,7 +11,7 @@ def fetch_reserve_data():
     """從 FRED API 抓取銀行準備金總額 (TOTRESNS)"""
     url = (
         f"https://api.stlouisfed.org/fred/series/observations"
-        f"?series_id=TOTRESNS&api_key={API_KEY}&file_type=json&sort_order=desc&limit=12"
+        f"?series_id=WRESBAL&api_key={API_KEY}&file_type=json&sort_order=desc&limit=12"
     )
     res = requests.get(url, timeout=10)
     res.raise_for_status()
