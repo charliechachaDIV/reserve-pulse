@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-08-01",
+  "updatedAt": "2026-10-07",
   "totresns": {
-    "current": 2.94,
-    "rawBillions": 2936.0,
-    "weeklyChange": -115.5,
-    "status": "消耗中"
+    "current": 3029.66,
+    "rawBillions": 3029659.0,
+    "weeklyChange": 81569.0,
+    "status": "補水中"
   },
   "vix": {
     "value": 14.8,
