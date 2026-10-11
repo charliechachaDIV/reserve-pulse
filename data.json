@@ -1,0 +1,14 @@
+{
+  "updatedAt": "2026-08-01",
+  "totresns": {
+    "current": 2.94,
+    "rawBillions": 2936.0,
+    "weeklyChange": -115.5,
+    "status": "消耗中"
+  },
+  "vix": {
+    "value": 14.8,
+    "phase": "充盈期"
+  },
+  "sp500": 7811
+}
