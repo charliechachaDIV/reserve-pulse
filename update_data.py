@@ -22,18 +22,21 @@ def fetch_reserve_data():
         raise ValueError("FRED 回傳資料不足")
 
     # FRED TOTRESNS 單位為：Billions of Dollars (十億美元)
-    # 取最新兩筆有效數值
+    # FRED WRESBAL 單位為：Millions of Dollars (百萬美元)
     valid_obs = [x for x in obs if x["value"] != "."]
-    latest_val_b = float(valid_obs[0]["value"])
-    prev_val_b = float(valid_obs[1]["value"])
+    latest_val_m = float(valid_obs[0]["value"])
+    prev_val_m = float(valid_obs[1]["value"])
 
-    latest_t = round(latest_val_b / 1000, 2)     # 換算為兆美元 ($T)
-    change_b = round(latest_val_b - prev_val_b, 1)  # 週變動 (十億美元)
+    # 換算為兆美元 ($T) 需要除以一百萬
+    latest_t = round(latest_val_m / 1000000, 3)     
+    
+    # 週變動換算為十億美元 ($B) 需要除以一千
+    change_b = round((latest_val_m - prev_val_m) / 1000, 1)  
 
     return {
         "date": valid_obs[0]["date"],
         "current_t": latest_t,
-        "current_b": latest_val_b,
+        "current_b": latest_val_m / 1000,
         "change_b": change_b,
         "status": "消耗中" if change_b < 0 else "補水中"
     }
