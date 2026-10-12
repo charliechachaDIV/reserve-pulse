@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReservePulse | Liquidity Turning Point Analysis</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .bg-grid {
+            background-color: #fafafa;
+            background-image: 
+                linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+                linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .neo-card {
+            background: #ffffff;
+            border: 3px solid #000000;
+            box-shadow: 8px 8px 0px 0px #000000;
+        }
+        .neo-card-interactive {
+            background: #ffffff;
+            border: 3px solid #000000;
+            box-shadow: 8px 8px 0px 0px #000000;
+            transition: all 0.15s ease-in-out;
+        }
+        .neo-card-interactive:hover {
+            box-shadow: 2px 2px 0px 0px #000000;
+            transform: translate(6px, 6px);
+        }
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&family=Noto+Sans:wght@500;700;900&display=swap');
+        .font-serif-en { font-family: 'Noto Sans', sans-serif; font-weight: 900; }
+        .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+        body { font-family: 'Noto Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-grid text-black min-h-screen py-10 px-4 sm:px-6 overflow-x-hidden">
+    <div class="max-w-7xl mx-auto space-y-12">
+        
+        <!-- Header -->
+        <header class="flex flex-col xl:flex-row justify-between items-start xl:items-end border-b-4 border-black pb-6 gap-6">
+            <div class="flex-1">
+                <div class="text-sm font-mono-code font-bold text-gray-500 tracking-widest uppercase mb-2">Liquidity Risk Intelligence</div>
+                <h1 class="text-4xl md:text-5xl font-serif-en font-black tracking-tight text-black flex flex-wrap items-baseline gap-3">
+                    <span>ReservePulse</span> 
+                    <span class="text-2xl md:text-3xl font-sans font-bold text-gray-400">/</span> 
+                    <span class="text-3xl md:text-4xl text-gray-700">Turning Point Analyzer</span>
+                </h1>
+            </div>
+            <div class="shrink-0 text-left md:text-right text-xs sm:text-sm font-mono-code font-bold text-gray-600 bg-white border-2 border-black p-3 neo-card">
+                <div id="dataDate">Base Date: Loading...</div>
+                <div>Source: Fed H.4.1 / FRED API</div>
+            </div>
+        </header>
+
+        <!-- Intro Section -->
+        <section class="neo-card p-8 md:p-10 bg-white">
+            <div class="inline-block bg-black text-white px-3 py-1 text-sm font-mono-code font-bold mb-4">FRAMEWORK / Liquidity Structure Perspective</div>
+            <h2 class="text-2xl md:text-3xl font-serif-en font-black leading-snug mb-4">
+                The valuation of financial assets is essentially a shadow of liquidity; while markets focus on rates and inflation, the underlying funding chain is determined by the "Reserve Level".
+            </h2>
+            <div class="text-base font-bold text-gray-700 leading-relaxed space-y-2 border-t-2 border-gray-200 pt-4">
+                <p>
+                    As the Overnight Reverse Repo (ON RRP) buffer is depleted, every dollar absorbed by Treasury issuance will equally impact commercial bank liquidity reserves. 
+                    ReservePulse aims to measure the true rate of reserves moving towards the <span class="text-black bg-yellow-100 px-1 inline-block">"Lowest Comfortable Level ($2.5T / $2.0T)"</span>, quantifying the defense window before liquidity stampede triggers.
+                </p>
+            </div>
+        </section>
+
+        <!-- Core HUD -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6">
+            <div class="neo-card-interactive p-4 lg:p-5 bg-white flex flex-col justify-between">
+                <div>
+                    <div class="text-xs font-black text-gray-500 uppercase tracking-wider mb-2">Bank Reserves (WRESBAL)</div>
+                    <div class="flex items-baseline gap-1.5 flex-wrap">
+                        <span class="text-3xl xl:text-4xl font-mono-code font-black text-black" id="totresnsVal">$2.92</span>
+                        <span class="text-sm font-black text-gray-600">T</span>
+                    </div>
+                </div>
+                <div id="totresnsChange" class="text-xs font-mono-code text-red-600 mt-3 font-bold bg-red-50 self-start px-2 py-1 border border-red-200">Weekly Chg: Calc...</div>
+            </div>
+
+            <div class="neo-card-interactive p-4 lg:p-5 bg-white flex flex-col justify-between">
+                <div>
+                    <div class="text-xs font-black text-gray-500 uppercase tracking-wider mb-2">Market Volatility (VIX)</div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-3xl xl:text-4xl font-mono-code font-black text-green-700" id="vixVal">--</span>
+                        <span class="shrink-0 text-xs font-black px-2 py-1 bg-green-100 border-2 border-green-700 text-green-800" id="vixBadge">Loading</span>
+                    </div>
+                </div>
+                <div class="text-xs text-gray-500 mt-3 font-mono-code font-bold">Friction phase below 2.5T (Est. 20~25)</div>
+            </div>
+
+            <div id="statusCard" class="neo-card-interactive p-4 lg:p-5 bg-yellow-50 border-yellow-500 flex flex-col justify-between">
+                <div>
+                    <div class="text-xs font-black text-yellow-800 uppercase tracking-wider mb-2">System Alert Status</div>
+                    <div class="mt-1 text-2xl xl:text-3xl font-serif-en font-black text-yellow-600 flex items-center gap-2" id="alertStateText">
+                        <span>On Alert</span><span>🟡</span>
+                    </div>
+                </div>
+                <div class="text-xs text-yellow-800 mt-3 font-bold" id="alertStateSub">ON RRP buffer depleted</div>
+            </div>
+
+            <div class="neo-card-interactive p-4 lg:p-5 bg-white flex flex-col justify-between">
+                <div>
+                    <div class="text-xs font-black text-gray-500 uppercase tracking-wider mb-2">Distance to $2.5T Turning Point</div>
+                    <div class="flex items-baseline gap-1.5 flex-wrap">
+                        <span class="text-3xl xl:text-4xl font-mono-code font-black text-black" id="yellowCountdown">--</span>
+                        <span class="text-sm font-black text-gray-600">Months</span>
+                    </div>
+                </div>
+                <div id="hudRateLabel" class="text-xs font-mono-code text-gray-600 mt-3 font-bold bg-gray-100 self-start px-2 py-1 border border-gray-300">Current Scenario: $90B/mo</div>
+            </div>
+        </section>
+
+        <!-- Chart -->
+        <section class="neo-card p-6 md:p-8 bg-white overflow-hidden">
+            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center pb-6 mb-6 border-b-2 border-gray-200 gap-4">
+                <div>
+                    <h3 class="text-xl md:text-2xl font-black text-black">Liquidity Level vs S&P 500</h3>
+                    <p class="text-xs md:text-sm font-bold text-gray-500 mt-1">Observing potential impacts on stock market volatility when reserves break below $2.5T</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3 text-xs md:text-sm font-mono-code font-bold text-gray-700 bg-gray-50 p-2 border-2 border-black">
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-1 bg-black inline-block"></span> Actual</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-1 border-t-4 border-dashed border-black inline-block"></span> Projected</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 bg-gray-200 border border-gray-400 inline-block"></span> S&P 500</span>
+                </div>
+            </div>
+            <div class="h-[350px] md:h-[450px] w-full min-w-0"><canvas id="reserveChart"></canvas></div>
+        </section>
+
+        <!-- Sliders -->
+        <section class="neo-card p-6 md:p-8 lg:p-10 bg-gray-50">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:gap-12 items-start">
+                <div class="w-full">
+                    <div class="text-xs lg:text-sm font-mono-code font-black text-gray-500 uppercase mb-2">Scenario Engine</div>
+                    <h3 class="text-xl lg:text-2xl font-black text-black mb-4">Treasury Monthly Net Issuance Drain</h3>
+                    <div class="bg-white border-2 border-black p-5 lg:p-6 mb-4 neo-card-interactive">
+                        <div class="flex flex-wrap justify-between items-end text-base lg:text-lg font-mono-code font-black mb-4 gap-2">
+                            <span>Net Drain Rate:</span><span id="rateLabel" class="text-blue-700">$90B / mo</span>
+                        </div>
+                        <input type="range" id="rateSlider" min="400" max="1600" step="50" value="900" class="w-full h-3 bg-gray-200 border-2 border-black appearance-none cursor-pointer accent-black">
+                        <div class="flex justify-between text-[10px] sm:text-xs font-mono-code font-bold text-gray-500 mt-3 gap-1">
+                            <span>$40B<br class="sm:hidden">(Low)</span>
+                            <span>$90B<br class="sm:hidden">(Base)</span>
+                            <span class="text-right">$160B<br class="sm:hidden">(Surge)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full bg-white border-4 border-black p-5 lg:p-6 space-y-4 text-xs sm:text-sm font-bold">
+                    <div class="text-black border-b-4 border-black pb-3 flex flex-wrap justify-between text-base lg:text-lg gap-2">
+                        <span class="whitespace-nowrap">Reserve Range</span>
+                        <span class="text-gray-600 whitespace-nowrap">VIX Status Definition</span>
+                    </div>
+                    <div class="flex flex-wrap justify-between items-center py-2 gap-2">
+                        <span class="font-mono-code text-green-700 text-base lg:text-lg whitespace-nowrap">> $2.5 Trillion</span>
+                        <span class="text-gray-700 font-mono-code bg-green-50 px-2 py-1 border border-green-200 text-xs sm:text-sm whitespace-nowrap">VIX 12~15 (Abundant)</span>
+                    </div>
+                    <div class="flex flex-wrap justify-between items-center py-2 bg-yellow-50 px-3 border-l-4 border-yellow-500 gap-2">
+                        <span class="font-mono-code text-yellow-700 text-base lg:text-lg whitespace-nowrap">$2.0 ~ $2.5 Trillion</span>
+                        <span class="text-black font-mono-code font-black text-xs sm:text-sm whitespace-nowrap">VIX 18~25 (Friction)</span>
+                    </div>
+                    <div class="flex flex-wrap justify-between items-center py-2 bg-red-50 px-3 border-l-4 border-red-600 gap-2">
+                        <span class="font-mono-code text-red-700 text-base lg:text-lg whitespace-nowrap">< $2.0 Trillion</span>
+                        <span class="text-red-700 font-mono-code font-black text-xs sm:text-sm whitespace-nowrap">VIX > 30 (Stampede)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('reserveChart').getContext('2d');
+        const labels = ['25-Q1', '25-Q2', '25-Q3', '25-Q4', '26-Q1', '26-Q2', '26-Q3 (Now)', '26-Q4', '27-Q1', '27-Q2', '27-Q3'];
+        let currentReserveTrillion = 2.92;
+        let chart;
+
+        Chart.defaults.font.family = "'Noto Sans', sans-serif";
+        function initChart() {
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Actual Reserves', data: [3.30, 3.25, 3.18, 3.10, 3.05, 3.00, currentReserveTrillion, null, null, null, null], borderColor: '#000', borderWidth: 3 },
+                        { label: 'Projected Drain', data: [null, null, null, null, null, null, currentReserveTrillion, 2.65, 2.38, 2.11, 1.84], borderColor: '#000', borderDash: [6, 6] },
+                        { label: 'S&P 500', data: [5000, 5200, 5450, 5600, 5500, 5550, 5650, null, null, null, null], borderColor: '#9ca3af', fill: true, backgroundColor: 'rgba(229, 231, 235, 0.4)', yAxisID: 'y1' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 1.5, max: 3.5 },
+                        y1: { type: 'linear', position: 'right', min: 4000, max: 8000 }
+                    }
+                }
+            });
+        }
+
+        function updateProjection() {
+            const drainRate = parseFloat(document.getElementById('rateSlider').value); 
+            const drainBillion = drainRate / 10;
+            document.getElementById('rateLabel').innerText = `$${drainBillion}B / mo`;
+            document.getElementById('hudRateLabel').innerText = `Current Scenario: $${drainBillion}B/mo`;
+
+            const reserveInBillions = currentReserveTrillion * 1000;
+            const gap = reserveInBillions - 2500;
+            document.getElementById('yellowCountdown').innerText = gap > 0 ? (gap / drainBillion).toFixed(1) : "0.0";
+
+            const qDrain = (drainRate * 3) / 10000; 
+            const p1 = currentReserveTrillion - qDrain;
+            chart.data.datasets[1].data = [null, null, null, null, null, null, currentReserveTrillion, p1, p1 - qDrain, p1 - qDrain*2, p1 - qDrain*3];
+            chart.update();
+        }
+
+        document.getElementById('rateSlider').addEventListener('input', updateProjection);
+
+        async function loadLiveData() {
+            try {
+                const response = await fetch('./data.json?t=' + Date.now());
+                if (!response.ok) return;
+                const data = await response.json();
+
+                document.getElementById('dataDate').innerText = `Base Date: ${data.updatedAt}`;
+                currentReserveTrillion = data.totresns.current;
+                document.getElementById('totresnsVal').innerText = `$${currentReserveTrillion}`;
+                
+                const chg = data.totresns.weeklyChange;
+                const chgEl = document.getElementById('totresnsChange');
+                const statusEn = chg < 0 ? "Draining" : "Refilling";
+                chgEl.innerText = `Weekly Chg: ${chg > 0 ? '+' : ''}$${chg}B (${statusEn})`;
+                chgEl.className = chg < 0 
+                    ? "text-xs font-mono-code text-red-600 mt-3 font-bold bg-red-50 self-start px-2 py-1 border border-red-200"
+                    : "text-xs font-mono-code text-green-700 mt-3 font-bold bg-green-50 self-start px-2 py-1 border border-green-200";
+                
+                document.getElementById('vixVal').innerText = data.vix.value;
+                
+                let phaseEn = "Abundant";
+                if (data.vix.value >= 18 && data.vix.value <= 25) phaseEn = "Friction";
+                else if (data.vix.value > 25) phaseEn = "Stampede";
+                document.getElementById('vixBadge').innerText = phaseEn;
+
+                chart.data.datasets[2].data[6] = data.sp500;
+                chart.data.datasets[0].data[6] = currentReserveTrillion;
+                updateProjection();
+            } catch (err) {
+                console.log("Failed to load live data");
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => { initChart(); loadLiveData(); });
+    </script>
+</body>
+</html>
