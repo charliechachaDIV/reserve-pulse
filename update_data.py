@@ -65,7 +65,8 @@ def fetch_market_data():
 
 def main():
     print("[1/2] 正在向 FRED 請求 TOTRESNS 數據...")
-    reserve = ()
+    # 把 reserve = () 改成下面這行
+    reserve = fetch_reserve_data()
 
     print("[2/2] 正在抓取 VIX 與 S&P 500 數據...")
     market = fetch_market_data()
