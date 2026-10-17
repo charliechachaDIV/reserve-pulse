@@ -13,7 +13,8 @@ def fetch_reserve_data():
         f"https://api.stlouisfed.org/fred/series/observations"
         f"?series_id=WRESBAL&api_key={API_KEY}&file_type=json&sort_order=desc&limit=12"
     )
-    res = requests.get(url, timeout=10)
+    # 修改為 30 秒或更長
+    res = requests.get(url, timeout=30)
     res.raise_for_status()
     data = res.json()
     obs = data.get("observations", [])
@@ -64,7 +65,7 @@ def fetch_market_data():
 
 def main():
     print("[1/2] 正在向 FRED 請求 TOTRESNS 數據...")
-    reserve = fetch_reserve_data()
+    reserve = ()
 
     print("[2/2] 正在抓取 VIX 與 S&P 500 數據...")
     market = fetch_market_data()
