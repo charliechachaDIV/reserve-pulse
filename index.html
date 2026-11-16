@@ -197,7 +197,7 @@
 
     <script>
         const ctx = document.getElementById('reserveChart').getContext('2d');
-        const labels = ['25-Q1', '25-Q2', '25-Q3', '25-Q4', '26-Q1', '26-Q2', '26-Q3 (現狀)', '26-Q4', '27-Q1', '27-Q2', '27-Q3'];
+        const labels = ['25-Q2', '25-Q3', '25-Q4', '26-Q1', '26-Q2', '26-Q3', '26-Q4 (現狀)', '27-Q1', '27-Q2', '27-Q3', '27-Q4'];
         
         let currentReserveTrillion = 2.92;
         let chart;
@@ -213,7 +213,7 @@
                     datasets: [
                         {
                             label: 'TOTRESNS 準備金實績 (兆$)',
-                            data: [3.30, 3.25, 3.18, 3.10, 3.05, 3.00, currentReserveTrillion, null, null, null, null],
+                            data: [3.25, 3.18, 3.10, 3.05, 3.00, 2.96, currentReserveTrillion, null, null, null, null],
                             borderColor: '#000000',
                             backgroundColor: '#000000',
                             borderWidth: 3,
@@ -235,12 +235,12 @@
                         },
                         {
                             label: '標普 500 (右軸)',
-                            data: [5000, 5200, 5450, 5600, 5500, 5550, 5650, null, null, null, null],
+                            data: [6205, 6688, 6846, 6529, 7499, 7652, 7562, null, null, null, null],
                             borderColor: '#9ca3af',
                             backgroundColor: 'rgba(229, 231, 235, 0.4)',
                             borderWidth: 2,
                             fill: true,
-                            pointRadius: 0,
+                            pointRadius: 2,
                             tension: 0.3,
                             yAxisID: 'y1'
                         },
