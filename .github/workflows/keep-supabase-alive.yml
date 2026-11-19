@@ -1,0 +1,21 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    - cron: '0 2 */3 * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping PaceShaper Supabase
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: ${{ secrets.PACESHAPER_SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.PACESHAPER_SUPABASE_ANON_KEY }}" \
+            "${{ secrets.PACESHAPER_SUPABASE_URL }}/rest/v1/")
+          echo "PaceShaper Supabase HTTP status: $STATUS"
+          if [ "$STATUS" -ge 500 ]; then
+            exit 1
+          fi
