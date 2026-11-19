@@ -18,3 +18,13 @@ jobs:
           if [ "$STATUS" -ge 500 ]; then
             exit 1
           fi
+
+      - name: Ping Lottery Supabase
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: ${{ secrets.LOTTERY_SUPABASE_PUBLISHABLE_KEY }}" \
+            "${{ secrets.LOTTERY_SUPABASE_URL }}/rest/v1/")
+          echo "Lottery Supabase HTTP status: $STATUS"
+          if [ "$STATUS" -ge 500 ]; then
+            exit 1
+          fi
