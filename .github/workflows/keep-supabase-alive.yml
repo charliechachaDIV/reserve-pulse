@@ -12,8 +12,7 @@ jobs:
       - name: Ping PaceShaper Supabase
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "apikey: ${{ secrets.PACESHAPER_SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.PACESHAPER_SUPABASE_ANON_KEY }}" \
+            -H "apikey: ${{ secrets.PACESHAPER_SUPABASE_PUBLISHABLE_KEY }}" \
             "${{ secrets.PACESHAPER_SUPABASE_URL }}/rest/v1/")
           echo "PaceShaper Supabase HTTP status: $STATUS"
           if [ "$STATUS" -ge 500 ]; then
