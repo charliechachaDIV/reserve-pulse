@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-11-11",
+  "updatedAt": "2026-11-18",
   "totresns": {
-    "current": 2.961,
-    "rawBillions": 2960.603,
-    "weeklyChange": 30.5,
+    "current": 2.98,
+    "rawBillions": 2979.656,
+    "weeklyChange": 19.1,
     "status": "補水中"
   },
   "vix": {
-    "value": 18.7,
-    "phase": "摩擦期"
+    "value": 28.4,
+    "phase": "踩踏期"
   },
-  "sp500": 7592
+  "sp500": 7175
 }
